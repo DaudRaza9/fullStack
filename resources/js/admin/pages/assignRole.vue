@@ -5,7 +5,7 @@
 
                 <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
                 <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-                    <p class="_title0">Role Management
+                    <p class="_title0">Manage Role
                         <Select v-model="data.id" placeholder="Select Admin type" style="width: 300px" @on-change="changeAdmin">
                             <Option :value="r.id" v-for="(r, i) in roles" :key="i" v-if="roles.length">{{ r.roleName }}</Option>
                         </Select>

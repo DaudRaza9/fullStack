@@ -5,7 +5,7 @@
 
                 <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
                 <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-                    <p class="_title0">Role Management
+                    <p class="_title0">Manage Role
                         <Button @click="addModel=true">
                             <Icon type="md-add"/>
                             Add new Role
