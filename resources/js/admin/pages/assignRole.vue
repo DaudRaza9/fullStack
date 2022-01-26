@@ -72,7 +72,6 @@ export default {
                 {resourceName: 'Admin Users', read:false, write:false, update:false, delete:false,name:'adminusers'},
                 {resourceName: 'Role', read:false, write:false, update:false, delete:false,name:'role'},
                 {resourceName: 'Assign Role', read:false, write:false, update:false, delete:false,name:'assignRole'},
-
             ],
         }
     },
@@ -96,7 +95,7 @@ export default {
             }else{
                 this.resources = JSON.parse(permission)
             }
-            console.log(permission)
+            //console.log(permission)
         }
     },
 

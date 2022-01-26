@@ -22,13 +22,15 @@ class AdminController extends Controller
         }
         //check if user is a admin user
         $user = Auth::user();
+
         if ($user->userType == 'User') {
             return redirect('/login');
         }
         if ($request->path() == 'login') {
             return redirect('/');
         }
-        return $this->checkForPermission($user, $request);
+        return view('welcome',['user'=>$user]);
+//        return $this->checkForPermission($user, $request);
     }
 
     public function checkForPermission($user, $request)
@@ -57,11 +59,11 @@ class AdminController extends Controller
         $this->validate($request, ['email' => 'bail|required|email', 'password' => 'bail|required|min:6',]);
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-            if ($user->role->isAdmin == 0) {
-                Auth::logout();
-                return response()->json(['msg' => 'Incorrect login details'], 401);
-            }
-            return response()->json(['msg' => 'you are logged in', 'user' => $user]);
+//            if ($user->role->isAdmin == 0) {
+//                Auth::logout();
+//                return response()->json(['msg' => 'Incorrect login detail'], 401);
+//            }
+            return response()->json(['msg' => 'login successfull', 'user' => $user]);
         } else {
             return response()->json(['msg' => 'Incorrect Login details'], 401);
         }

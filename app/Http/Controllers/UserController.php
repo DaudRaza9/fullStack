@@ -18,7 +18,8 @@ class UserController extends Controller
             'password'=>'bail|required|min:6',
             'role_id'=>'required',
         ]);
-          $password = bcrypt($request->password);
+
+        $password = bcrypt($request->password);
 
         $user= User::create([
             'fullName' => $request->fullName,
