@@ -5,12 +5,10 @@
 
                 <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
                 <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-                    <p class="_title0">Manage Role
-                        <Button @click="addModel=true">
-                            <Icon type="md-add"/>
-                            Add new Role
-                        </Button>
-                    </p>
+                    <p class="_title0">Create blog</p>
+                    <div class="_input_field">
+                        <Input type="text" v-model="data.title" placeholder="Title" />
+                    </div>
                     <div class="_overflow _table_div blog_editor">
 
                         <editor
@@ -20,12 +18,30 @@
                             save-button-id="save-button"
                             :init-data="initData"
                             @save="onSave"
+                            :config="config"
                         />
+
                     </div>
+<!--                    <div class="_input_field">-->
+<!--                        <Input  type="textarea" v-model="data.post_excerpt" :rows="4" placeholder="Post excerpt " />-->
+<!--                    </div>-->
+<!--                    <div class="_input_field">-->
+<!--                        <Select  filterable multiple placeholder="Select category" v-model="data.category_id">-->
+<!--                            <Option v-for="(c, i) in category" :value="c.id" :key="i">{{ c.categoryName }}</Option>-->
+<!--                        </Select>-->
+<!--                    </div>-->
+<!--                    <div class="_input_field">-->
+<!--                        <Select  filterable multiple placeholder="Select tag" v-model="data.tag_id">-->
+<!--                            <Option v-for="(t, i) in tag" :value="t.id" :key="i">{{ t.tagName }}</Option>-->
+<!--                        </Select>-->
+<!--                    </div>-->
+<!--                    <div class="_input_field">-->
+<!--                        <Input  type="textarea" v-model="data.metaDescription" :rows="4" placeholder="Meta description" />-->
+<!--                    </div>-->
+
+
                     <div class="_input_field">
-                        <input type="text" placeholder="title"></input>
-                    </div><div class="_input_field">
-                        <Button type="primary" @click="save">Save the data</Button>
+                        <Button @click="save" :loading="isCreating" :disabled="isCreating">{{isCreating ? 'Please wait...' : 'Create blog'}}</Button>
                     </div>
 
                 </div>
@@ -34,56 +50,114 @@
     </div>
 </template>
 
+
 <script>
 
-
 export default {
-    data() {
+    data(){
         return {
             config: {
-                image: {
-                    field: 'image',
-                    types: 'image/*',
-                },
+
             },
-            initData:'<h1>this is some data</h1>',
-            data: {}
+            initData: null,
+            data: {
+                title : '',
+                post : '',
+                post_excerpt : '',
+                metaDescription : '',
+                category_id : [],
+                tag_id : [],
+                jsonData: null
+
+            },
+            articleHTML: '',
+            category : [],
+            tag : [],
+            isCreating: false,
+
+
         }
     },
-    methods: {
-        async addRole() {
-            if (this.data.roleName.trim() === '') return this.e('Role name is required')
-            const res = await this.callApi('post', 'app/create_role', this.data)
-            if (res.status === 201) {
-                this.tags.unshift(res.data)
-                this.s('Role has been added successfully!')
-                this.addModel = false
-                this.data.roleName = ''
-            } else {
-                if (res.status === 422) {
-                    if (res.data.errors.roleName) {
-                        this.e(res.data.errors.roleName[0])
-                    }
-                } else {
-                    this.swr()
-                }
-            }
-        },
 
-        onSave(response){
-            console.log(response)
+    methods : {
+        async onSave(response){
+            var data = response
+            await this.outputHtml(data.blocks)
+            console.log(this.articleHTML)
         },
         async save(){
-            const res = await this.$refs.editor._data.state.editor.save();
-        }
+            this.$refs.editor.save()
+        },
+        outputHtml(articleObj){
+            articleObj.map(obj => {
+                switch (obj.type) {
+                    case 'paragraph':
+                        this.articleHTML += this.makeParagraph(obj);
+                        break;
+                    case 'image':
+                        this.articleHTML += this.makeImage(obj);
+                        break;
+                    case 'header':
+                        this.articleHTML += this.makeHeader(obj);
+                        break;
+                    case 'raw':
+                        this.articleHTML += `<div class="ce-block">
+                            <div class="ce-block__content">
+                                <div class="ce-code">
+                                    <code>${obj.data.html}</code>
+                                </div>
+                            </div>
+				        </div>\n`;
+                        break;
+                    case 'code':
+                        this.articleHTML += this.makeCode(obj);
+                        break;
+                    case 'list':
+                        this.articleHTML += this.makeList(obj)
+                        break;
+                    case "quote":
+                        this.articleHTML += this.makeQuote(obj)
+                        break;
+                    case "warning":
+                        this.articleHTML += this.makeWarning(obj)
+                        break;
+                    case "checklist":
+                        this.articleHTML += this.makeChecklist(obj)
+                        break;
+                    case "embed":
+                        this.articleHTML += this.makeEmbed(obj)
+                        break;
+                    case 'delimeter':
+                        this.articleHTML += this.makeDelimeter(obj);
+                        break;
+                    default:
+                        return '';
+                }
+            });
+        },
     },
+    async created(){
+
+        const [cat, tag] = await Promise.all([
+            this.callApi('get', 'app/get_category'),
+            this.callApi('get', 'app/get_tags'),
+        ])
+
+        if(cat.status===200){
+            this.category = cat.data
+            this.tag = tag.data
+        }else{
+            this.swr()
+        }
+
+    }
 
 }
 </script>
 
 <style>
 .blog_editor {
-    width: 500px;
+    width: 400px;
     margin-left: 160px;
     padding: 4px 7px;
     font-size: 14px;
@@ -97,11 +171,8 @@ export default {
 .blog_editor:hover {
     border: 1px solid #57a3f3;
 }
-._input_field input{
+._input_field{
     margin: 20px 0 20px 160px;
-    width: 500px;
-}
-._input_field input:hover{
-    border: 1px solid #57a3f3;
+    width: 400px;
 }
 </style>

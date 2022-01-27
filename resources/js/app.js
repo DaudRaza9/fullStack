@@ -5,17 +5,19 @@
  */
 
 require('./bootstrap');
-import Vue from 'vue'
 window.Vue = require('vue').default;
 window.Vue = require('vue')
+import Vue from 'vue'
 import router from './router'
 import store from './store'
 import ViewUI from 'view-design';
+import jsonToHtml from './jsonToHtml'
+import Editor from 'vue-editor-js/src/index.js'
+import common from './common'
 import 'view-design/dist/styles/iview.css';
 Vue.use(ViewUI);
-import common from './common'
 Vue.mixin(common)
-import Editor from 'vue-editor-js/src/index.js'
+Vue.mixin(jsonToHtml)
 Vue.use(Editor)
 
 

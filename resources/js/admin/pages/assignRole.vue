@@ -65,7 +65,7 @@ export default {
                 {resourceName: 'Assign Role', read:false, write:false, update:false, delete:false,name:'assignRole'},
             ],
             DefaultResourcesPermission :[
-                {resourceName: 'Home', read:false, write:false, update:false, delete:false,name:'home'},
+                {resourceName: 'Home', read:false, write:false, update:false, delete:false,name:'/'},
                 {resourceName: 'Tags', read:false, write:false, update:false, delete:false,name:'tags'},
                 {resourceName: 'Category', read:false, write:false, update:false, delete:false,name:'category'},
                 {resourceName: 'Create blogs', read:false, write:false, update:false, delete:false,name:'createBlog'},

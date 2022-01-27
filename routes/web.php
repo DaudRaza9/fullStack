@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TestController;
@@ -46,7 +47,8 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function (){
         //--Login--//
         Route::post('/login',[AdminController::class,'login']);
 });
-
+Route::post('/createBlog',[BlogController::class,'createBlog']);
+Route::get('/slug',[AdminController::class,'slug']);
 Route::get('/logout',[AdminController::class,'logout']);
 Route::get('/',[AdminController::class,'index']);
 Route::get('/{slug}',[AdminController::class,'index']);

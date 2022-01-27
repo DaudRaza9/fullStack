@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Blog;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use Illuminate\Support\Facades\Auth;
@@ -29,8 +30,7 @@ class AdminController extends Controller
         if ($request->path() == 'login') {
             return redirect('/');
         }
-        return view('welcome',['user'=>$user]);
-//        return $this->checkForPermission($user, $request);
+        return $this->checkForPermission($user, $request);
     }
 
     public function checkForPermission($user, $request)
@@ -59,13 +59,13 @@ class AdminController extends Controller
         $this->validate($request, ['email' => 'bail|required|email', 'password' => 'bail|required|min:6',]);
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = Auth::user();
-//            if ($user->role->isAdmin == 0) {
-//                Auth::logout();
-//                return response()->json(['msg' => 'Incorrect login detail'], 401);
-//            }
+            if ($user->role->isAdmin == 0) {
+                Auth::logout();
+                return response()->json(['msg' => 'Incorrect login detail'], 401);
+            }
             return response()->json(['msg' => 'login successfull', 'user' => $user]);
         } else {
-            return response()->json(['msg' => 'Incorrect Login details'], 401);
+            return response()->json(['msg' => 'Incorrect Login detailssss'], 401);
         }
     }
 
@@ -73,6 +73,17 @@ class AdminController extends Controller
     {
         Auth::logout();
         return redirect('/login');
+    }
+
+    public function slug(){
+        $title  ='this is a nice title';
+        return Blog::create([
+            'title' => $title,
+            'post'=>'some post',
+            'post_excerpt'=>'aed',
+            'user_id'=>1,
+            'metaDescription'=>'aed',
+        ]);
     }
 
 }
