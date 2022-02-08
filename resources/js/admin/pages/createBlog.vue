@@ -22,22 +22,22 @@
                         />
 
                     </div>
-<!--                    <div class="_input_field">-->
-<!--                        <Input  type="textarea" v-model="data.post_excerpt" :rows="4" placeholder="Post excerpt " />-->
-<!--                    </div>-->
-<!--                    <div class="_input_field">-->
-<!--                        <Select  filterable multiple placeholder="Select category" v-model="data.category_id">-->
-<!--                            <Option v-for="(c, i) in category" :value="c.id" :key="i">{{ c.categoryName }}</Option>-->
-<!--                        </Select>-->
-<!--                    </div>-->
-<!--                    <div class="_input_field">-->
-<!--                        <Select  filterable multiple placeholder="Select tag" v-model="data.tag_id">-->
-<!--                            <Option v-for="(t, i) in tag" :value="t.id" :key="i">{{ t.tagName }}</Option>-->
-<!--                        </Select>-->
-<!--                    </div>-->
-<!--                    <div class="_input_field">-->
-<!--                        <Input  type="textarea" v-model="data.metaDescription" :rows="4" placeholder="Meta description" />-->
-<!--                    </div>-->
+                    <div class="_input_field">
+                        <Input  type="textarea" v-model="data.post_excerpt" :rows="4" placeholder="Post excerpt " />
+                    </div>
+                    <div class="_input_field">
+                        <Select  filterable multiple placeholder="Select category" v-model="data.category_id">
+                            <Option v-for="(c, i) in category" :value="c.id" :key="i">{{ c.categoryName }}</Option>
+                        </Select>
+                    </div>
+                    <div class="_input_field">
+                        <Select  filterable multiple placeholder="Select tag" v-model="data.tag_id">
+                            <Option v-for="(t, i) in tag" :value="t.id" :key="i">{{ t.tagName }}</Option>
+                        </Select>
+                    </div>
+                    <div class="_input_field">
+                        <Input  type="textarea" v-model="data.metaDescription" :rows="4" placeholder="Meta description" />
+                    </div>
 
 
                     <div class="_input_field">
@@ -74,8 +74,6 @@ export default {
             category : [],
             tag : [],
             isCreating: false,
-
-
         }
     },
 
@@ -83,7 +81,31 @@ export default {
         async onSave(response){
             var data = response
             await this.outputHtml(data.blocks)
-            console.log(this.articleHTML)
+            this.data.post = this.articleHTML
+            this.data.jsonData = JSON.stringify(data)
+            if(this.data.post.trim()==='') return this.e('Post is required')
+            if(this.data.title.trim()==='') return this.e('Title is required')
+            if(this.data.post_excerpt.trim()==='') return this.e('Post excerpt is required')
+            if(this.data.metaDescription.trim()==='') return this.e('Meta description is required')
+            if(!this.data.tag_id.length) return this.e('Tag is required')
+            if(!this.data.category_id.length) return this.e('Category is required')
+
+            this.isCreating = true
+            const res = await this.callApi('post','app/create-blog',this.data)
+            if(res.status === 200){
+                this.s('Blog has been created successfully!!')
+                //redirect
+                this.$router.push('/blogs')
+            }else{
+                if(res.status===422){
+                    for(let i in res.data.errors){
+                        this.e(res.data.errors[i][0])
+                    }
+                }else{
+                    this.swr()
+                }
+            }
+            this.isCreating = false
         },
         async save(){
             this.$refs.editor.save()

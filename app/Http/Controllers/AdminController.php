@@ -67,6 +67,7 @@ class AdminController extends Controller
         } else {
             return response()->json(['msg' => 'Incorrect Login detailssss'], 401);
         }
+
     }
 
     public function logout(Request $request)
@@ -76,7 +77,7 @@ class AdminController extends Controller
     }
 
     public function slug(){
-        $title  ='this is a nice title';
+        $title  ='this is a nice title changed';
         return Blog::create([
             'title' => $title,
             'post'=>'some post',

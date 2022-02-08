@@ -46,9 +46,19 @@ Route::prefix('app')->middleware([AdminCheck::class])->group(function (){
         Route::post('/assign_roles',[RoleController::class,'assignRole']);
         //--Login--//
         Route::post('/login',[AdminController::class,'login']);
+
+        //--blog--//
+         Route::post('/create-blog',[BlogController::class,'create']);
+         Route::post('/createBlog',[BlogController::class,'createBlog']);
+         Route::post('/blog',[BlogController::class,'blog']);
+         Route::get('/blogData',[BlogController::class,'blogData']);
+         Route::post('/delete_blog',[BlogController::class,'deleteBlog']);
+         Route::get('/blog_single/{id}',[BlogController::class,'singleBlogItem']);
 });
-Route::post('/createBlog',[BlogController::class,'createBlog']);
+
 Route::get('/slug',[AdminController::class,'slug']);
+Route::get('/blogData',[BlogController::class,'blogData']);
+
 Route::get('/logout',[AdminController::class,'logout']);
 Route::get('/',[AdminController::class,'index']);
 Route::get('/{slug}',[AdminController::class,'index']);
