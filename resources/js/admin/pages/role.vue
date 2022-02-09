@@ -123,7 +123,7 @@ export default {
             if (this.data.roleName.trim() === '') return this.e('Role name is required')
             const res = await this.callApi('post', 'app/create_role', this.data)
             if (res.status === 201) {
-                this.tags.unshift(res.data)
+                this.roles.unshift(res.data)
                 this.s('Role has been added successfully!')
                 this.addModel = false
                 this.data.roleName = ''

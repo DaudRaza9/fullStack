@@ -1,11 +1,11 @@
-<template>
+    <template>
     <div>
         <div class="content">
             <div class="container-fluid">
 
                 <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
                 <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-                    <p class="_title0">Tags
+                    <p class="_title0">Admin users
                         <Button @click="addModel=true">
                             <Icon type="md-add"/>
                             Add Admin
@@ -15,7 +15,7 @@
                         <table class="_table">
                             <!-- TABLE TITLE -->
                             <tr>
-                                <th>ID</th>
+                                <th>IDs</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>User Type</th>
@@ -29,7 +29,7 @@
                                 <td>{{ user.id }}</td>
                                 <td class="_table_name">{{ user.fullName }}</td>
                                 <td>{{ user.email }}</td>
-                                <td>{{ user.userType }}</td>
+                                <td>{{ user.role_id }}</td>
                                 <td>{{ user.created_at }}</td>
                                 <td>
                                     <Button type="info" size="small" @click="showEditModel(user,i)">Edit</Button>
@@ -43,10 +43,10 @@
                     </div>
                 </div>
 
-                <!--Adding tag model-->
+                <!--Adding admin-User model-->
                 <Modal
                     v-model="addModel"
-                    title="Add tag"
+                    title="Add User"
                     :mask-closable="false"
                     :closable="false"
                 >
@@ -92,8 +92,7 @@
                         <Input type="password" v-model="editData.password" placeholder="Add password..."/>
                     </div>
                     <div class="space">
-                        <Select v-model="editData.userType" placeholder="Select Admin type">
-
+                        <Select v-model="editData.role_id" placeholder="Select Admin type">
                             <Option value="Admin" >Admin</Option>
                             <Option value="Editor" >Editor</Option>
                         </Select>
@@ -186,7 +185,7 @@ export default {
         async editAdmin() {
             if (this.editData.fullName.trim() === '') return this.e('Full name is required')
             if (this.editData.email.trim() === '') return this.e('Email is required')
-            if (this.editData.role_id) return this.e('Role-Id is required')
+            if (!this.editData.role_id) return this.e('User type is required')
 
             const res = await this.callApi('post', 'app/edit_user', this.editData)
             if (res.status === 200) {
@@ -209,7 +208,7 @@ export default {
                 id: user.id,
                 fullName: user.fullName,
                 email: user.email,
-                userType: user.userType
+                role_id: user.role_id
             }
             this.editData = obj
             this.editModel = true

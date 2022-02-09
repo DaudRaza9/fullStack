@@ -7,6 +7,9 @@
 require('./bootstrap');
 window.Vue = require('vue').default;
 window.Vue = require('vue')
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 import Vue from 'vue'
 import router from './router'
 import store from './store'
